@@ -105,5 +105,5 @@ var genArrays = Array.from({length: 6}, function (value, index) {
 
 console.log(genArray, genArrays);   //[ 1, 1, 4, 27, 256, 3125 ] [ 1, 1, 4, 27, 256, 3125 ]
 
-// 基本类型
+// 基本类型. 在基本类型的转化中,toLength(items.length);的到结果为0,则生成一个[]数组.
 Array.froms(1);   // []
