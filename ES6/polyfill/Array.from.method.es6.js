@@ -87,14 +87,23 @@ Array.froms = (function() {
     };
 }());
 
+// 不要在剪头函数中使用this.babel将其编译为undefined
+// let genArrays = Array.froms({length: 6}, (value, index) => {
+//     return this.pow(index, index);
+//     // return index ** index
+// }, Math);
 
-let genArrays = Array.froms({length: 6}, (value, index) => {
+// polyfill , by ES5
+var genArray = Array.froms({length: 6}, function (value, index) {
     return this.pow(index, index);
-    // return index ** index
 }, Math);
 
-var genArray = Array.from({length: 6}, function (value, index) {
-    return this.pow(index, index);
+// ES6 Array.from
+var genArrays = Array.from({length: 6}, function (value, index) {
+    return index ** index;
 }, Math);
 
-console.log(genArray, genArray);
+console.log(genArray, genArrays);   //[ 1, 1, 4, 27, 256, 3125 ] [ 1, 1, 4, 27, 256, 3125 ]
+
+// 基本类型
+Array.froms(1);   // []
