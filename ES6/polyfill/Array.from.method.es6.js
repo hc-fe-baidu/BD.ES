@@ -87,11 +87,6 @@ Array.froms = (function() {
     };
 }());
 
-// 不要在剪头函数中使用this.babel将其编译为undefined
-// let genArrays = Array.froms({length: 6}, (value, index) => {
-//     return this.pow(index, index);
-//     // return index ** index
-// }, Math);
 
 // polyfill , by ES5
 var genArray = Array.froms({length: 6}, function (value, index) {
