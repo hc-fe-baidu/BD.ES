@@ -1,0 +1,136 @@
+@import "../../themes/default/custom.less";
+
+.calendarPanelHeader(@calendar-prefix-cls) {
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  user-select: none;
+  border-bottom: 1px solid @border-color-split;
+
+  a:hover {
+    color: @link-hover-color;
+  }
+
+  .@{calendar-prefix-cls}-century-select,
+  .@{calendar-prefix-cls}-decade-select,
+  .@{calendar-prefix-cls}-year-select,
+  .@{calendar-prefix-cls}-month-select {
+    padding: 0 2px;
+    font-weight: bold;
+    display: inline-block;
+    color: #666;
+    line-height: 34px;
+  }
+
+  .@{calendar-prefix-cls}-century-select-arrow,
+  .@{calendar-prefix-cls}-decade-select-arrow,
+  .@{calendar-prefix-cls}-year-select-arrow,
+  .@{calendar-prefix-cls}-month-select-arrow {
+    display: none;
+  }
+
+  .@{calendar-prefix-cls}-prev-century-btn,
+  .@{calendar-prefix-cls}-next-century-btn,
+  .@{calendar-prefix-cls}-prev-decade-btn,
+  .@{calendar-prefix-cls}-next-decade-btn,
+  .@{calendar-prefix-cls}-prev-month-btn,
+  .@{calendar-prefix-cls}-next-month-btn,
+  .@{calendar-prefix-cls}-prev-year-btn,
+  .@{calendar-prefix-cls}-next-year-btn {
+    position: absolute;
+    top: 0;
+    color: #999;
+    font-family: Arial,"Hiragino Sans GB","Microsoft Yahei","Microsoft Sans Serif",sans-serif;
+    padding: 0 5px;
+    font-size: 16px;
+    display: inline-block;
+    line-height: 34px;
+  }
+
+  .@{calendar-prefix-cls}-prev-century-btn,
+  .@{calendar-prefix-cls}-prev-decade-btn,
+  .@{calendar-prefix-cls}-prev-year-btn {
+    left: 7px;
+  }
+
+  .@{calendar-prefix-cls}-next-century-btn,
+  .@{calendar-prefix-cls}-next-decade-btn,
+  .@{calendar-prefix-cls}-next-year-btn {
+    right: 7px;
+  }
+
+  .@{calendar-prefix-cls}-prev-month-btn {
+    left: 29px;
+  }
+
+  .@{calendar-prefix-cls}-next-month-btn {
+    right: 29px;
+  }
+}
+.@{calendar-prefix-cls}-month-panel {
+  left: 0;
+  top: 34px;
+  bottom: 0;
+  right: 0;
+  background: #fff;
+  z-index: 10;
+  position: absolute;
+  outline: none;
+  border-radius: @border-radius-base;
+}
+
+.@{calendar-prefix-cls}-month-panel-hidden {
+  display: none;
+}
+
+.@{calendar-prefix-cls}-month-panel-header {
+  .calendarPanelHeader(~"@{calendar-prefix-cls}-month-panel");
+}
+
+.@{calendar-prefix-cls}-month-panel-table {
+  table-layout: fixed;
+  width: 100%;
+  height: 248px;
+  border-collapse: separate;
+}
+
+.@{calendar-prefix-cls}-month-panel-selected-cell .@{calendar-prefix-cls}-month-panel-month {
+  background: @primary-color;
+  color: #fff;
+
+  &:hover {
+    background: @primary-color;
+    color: #fff;
+  }
+}
+
+.@{calendar-prefix-cls}-month-panel-cell {
+  text-align: center;
+
+  &-disabled .@{calendar-prefix-cls}-month-panel-month {
+    &,
+    &:hover {
+      cursor: not-allowed;
+      color: #bcbcbc;
+      background: #f3f3f3;
+    }
+  }
+}
+
+.@{calendar-prefix-cls}-month-panel-month {
+  display: inline-block;
+  margin: 0 auto;
+  color: #666;
+  background: transparent;
+  text-align: center;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: tint(@primary-color, 90%);
+    cursor: pointer;
+  }
+}
