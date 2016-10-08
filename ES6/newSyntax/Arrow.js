@@ -34,7 +34,7 @@ console.log(arrow1(4), arrow2(5));
  */
 
 let arrow3 = (a = 1) => ({
-    thisV: this,
+  thisV: this,
     argument: arguments
 });
 
@@ -139,12 +139,28 @@ t2 = f().call({id: 3})(); // id: 1
 t3 = f()().call({id: 4}); // id: 1
 
 // 模拟简单的管道机制: 前一个函数的输出是后一个函数的输入.
-const pipeline = (...fn) => () => fn.reduce((pre, curr) => curr(pre()));
+// arr.reduce(callback,[initialValue])
+// 提供 operate 给 reduce 作为初始值,之后每次 reduce 时操作上一个参数然后结果返回给下个函数.
+// 因此 reduce 的两个参数依次是: 初试参数/fn1 => fn1(operate) . fn1(operate)/fn2 => fn2(fn1(operate)) ....
+// 由于参数需要统一传递所以每个传入管道的函数必须要给出一个数组类型的返回值.以保持 pipeline 的灵活性.
+// (pre, curr) => curr(...pre):这个函数是一个尾调用函数
+const pipeline = (...fn) => (...operate) => fn.reduce((pre, curr) => curr(...pre), operate); // curr(pre(...operate))
+const pow = (a = 0, b = 0) => [Math.pow(a, 2), Math.pow(b, 2)];
+const add = (a = 0, b = 0) => [a + b];
+const dePow = (a = 1) => Math.pow(a, 0.5);
+const piple = pipeline(pow, add, dePow);
+const resByPiple = piple(5, 12);
 
-const plus = a => a + 1;
-const mult = a => a * 2;
-let piple = pipeline(plus, mult);
-let resByPiple = piple(5);
-console.log(resByPiple)
+console.log(resByPiple);
+
+// 箭头函数还有一个功能，就是可以很方便地改写λ演算。
+// λ演算的写法
+fix = λf.(λx.f(λv.x(x)(v)))(λx.f(λv.x(x)(v)))
+
+// ES6的写法
+var fix = f => (x => f(v => x(x)(v)))
+               (x => f(v => x(x)(v)));
+// 上面两种写法，几乎是一一对应的。由于λ演算对于计算机科学非常重要，这使得我们可以用ES6作为替代工具，探索计算机科学。”
+
 
 // 关于剪头函数对 this 词法解析的影响和更详细的说明. 可以参考 ES6/diff/this.js

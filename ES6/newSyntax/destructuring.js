@@ -166,7 +166,7 @@ console.log(m0, m, m2, this.m);
 // TODO 推测: 模式声明的变量是类似变量对象的特殊对象的属性. es6的实现中全局的成员已经不是宿主对象的成员了.但他们必定属于某个替代对象. 暂时没看到类似的说明.待验证.
 // 推测2: 模式定义的属性并没有去设定变量的属性描述符: configurable.
 var mv = 1;
-delete m, m2, mv;
+// delete m, m2, mv;
 console.log(typeof m, typeof m2, typeof mv, this.m, this.m2, this.mv);
 
 
@@ -233,3 +233,23 @@ let len1 = (function (a) {}).length,
     // 默认参数以及其后的参数都不计入 length.
     len5 = (function (a=1, b, c, d) {}).length;
 console.log(len1, len2, len3, len4, len5);  // 1, 0, 1, 0, 0
+
+
+// 如下特性参考 ECMAScript 6 的 p307 - p317. TODO 未完待续
+// 目前我的 babel 对象还没有实现 rest 解析.
+// http://babeljs.io/repl : 选择 stage-0. 可以正常执行
+// let ma = {a: 1, b: 2}, mb = {c: 4},
+// let ma = [1, 2], mb = [2, 3, 4],
+    // mc = {...ma, ...mb};         // SyntaxError: Unexpected token ...
+
+// 对象的 rest 支持就可以实现mixins
+// let mixins = {
+//     componentDidMount() {},
+//     componentWillMount() {}
+// }
+// let reduxCom = {
+//     ...mixins,
+//     render() {
+//
+//     }
+// }

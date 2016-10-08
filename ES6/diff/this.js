@@ -274,14 +274,14 @@ console.log(strictThis === this, strictArg);
 // 剩余参数可以弥补 arguments.
 var arguments = 42;
 var arr = () => arguments;
-
+// TODO
 function foo() {
   var f = () => arguments[0]; // foo's implicit arguments binding
   return f(2);
 }
 
-console.log(arr(), foo(1)); // 1
-
+console.log(arr(), foo(1)); //
+// TODO
 // 看看 ES6 中class 下的方法和对象声明中的短方法是否遵循剪头函数的规律
 class Arrow1 {
     constructor(id, name) {

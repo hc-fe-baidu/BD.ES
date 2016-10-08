@@ -76,7 +76,7 @@ let mergeArr = arr1.concat(arr2, arr3);
 // [ 'a', 'b', 'c', 'd', 'e' ]
 
 // ES6的合并数组
-let mergeArr1 = [...arr1, ...arr2, ...arr3]
+let mergeArr1 = [...arr1, ...arr2, ...arr3];
 // [ 'a', 'b', 'c', 'd', 'e' ]”
 
 console.log(mergeArr, mergeArr1);
