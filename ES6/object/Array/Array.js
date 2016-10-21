@@ -25,13 +25,13 @@
 ['a',,'b'].filter(x => true) // ['a','b']
 
 // every方法
-[,'a'].every(x => x==='a') // true
+// [,'a'].every(x => x==='a') // true
 
 // some方法
-[,'a'].some(x => x !== 'a') // false
+// [,'a'].some(x => x !== 'a') // false
 
 // map方法
-[,'a'].map(x => 1) // [,1]
+[, 'a'].map(x => 1) // [,1]
 
 // join方法
 [,'a',undefined,null].join('#') // "#a##"

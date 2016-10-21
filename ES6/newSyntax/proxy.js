@@ -57,9 +57,20 @@ console.log(obj.time); // 35
 //  针对 a.b 或者 a['b'] 的访问方式, 返回值类型不限制, 最后一个参数receiver可选，当target对象设置了propKey属性的get函数时，receiver对象会绑定get函数的this对象
 
 // 完整的 handler 对象如下(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler)
+// 已废弃代理: handler.enumerate()
+// Obsolete: This feature is obsolete. Although it may still work in some browsers, its use is discouraged since it could be removed at any time. Try to avoid using it.
+//
 // handler.getPrototypeOf()
 // A trap for Object.getPrototypeOf.
 // handler.setPrototypeOf()
+// 拦截Object.getPrototypeOf()运算符，以及其他一些操作。
+//
+// Object.prototype.__proto__
+// Object.prototype.isPrototypeOf()
+// Object.getPrototypeOf()
+// Reflect.getPrototypeOf()
+// instanceof运算符
+
 // A trap for Object.setPrototypeOf.
 // handler.isExtensible()
 // A trap for Object.isExtensible.
@@ -68,6 +79,8 @@ console.log(obj.time); // 35
 // handler.getOwnPropertyDescriptor()
 // A trap for Object.getOwnPropertyDescriptor.
 // handler.defineProperty()
+
+// 代理新增属性
 // A trap for Object.defineProperty.
 // handler.has()
 // A trap for the in operator.
@@ -79,8 +92,31 @@ console.log(obj.time); // 35
 // A trap for the delete operator.
 // handler.ownKeys()
 // A trap for Object.getOwnPropertyNames.
+
+// 函数调用时触发,比较有用的拦截操作
 // handler.apply()
-// A trap for a function call.
+// A trap for a function call
+function add(...arg) {
+    console.log('init exec...');
+    return arg.reduce((cur, next) => cur + next);
+}
+
+const Log = {
+    info(target, thisArg, arg) {
+        console.log(new Date + '>>>', thisArg, '.', target.name, '(', arg.join(','), ')');
+    }
+}
+
+var addProxy =  new Proxy(add, {
+    apply(target, thisArg, argumentsList) {
+        Log.info(target, thisArg, argumentsList);
+        return Reflect.apply(target, thisArg, argumentsList) + '.00';
+    }
+});
+let addRe1 = addProxy(1,2,3);
+let addRe2 = addProxy.call(this, 1,2,3);
+console.log(addRe1, addRe2);
+
 // handler.construct()
 // A trap for the new operator.
 // eg: constructor
@@ -100,6 +136,13 @@ const PersonProxy = new Proxy(Person, {
 });
 let lm = new PersonProxy('liming', 19);
 console.log(lm);
+
+
+// 可取消的 proxy 代理
+let {proxy, revoke} = Proxy.revocable({}, {});
+proxy.foo = 100;
+revoke();
+// proxy.foo = 100;    // TypeError: Cannot perform 'set' on a proxy that has been revoked
 
 
 // 场景
@@ -148,3 +191,40 @@ console.log(person.age); // 100
 // 参考: /BD.ES/webModule/data-driven
 
 // 5.附加属性
+// 使用代理实现一个具有访问控制栈数据结构, js 中数组虽然提供了栈的操作.但是实际上我还是能够随意访问栈内任何元素.
+let products = new Proxy({
+  browsers: ['Internet Explorer', 'Netscape']
+},
+{
+  get: function(obj, prop) {
+    // An extra property
+    if (prop === 'latestBrowser') {
+      return obj.browsers[obj.browsers.length - 1];
+    }
+
+    // The default behavior to return the value
+    return obj[prop];
+  },
+  set: function(obj, prop, value) {
+    // An extra property
+    if (prop === 'latestBrowser') {
+      return obj.browsers.push(value);
+    }
+
+    // Convert the value if it is not an array
+    if (typeof value === 'string') {
+      value = [value];
+    }
+
+    // The default behavior to store the value
+    return obj[prop] = value;
+  }
+});
+
+console.log(products.browsers); // ['Internet Explorer', 'Netscape']
+products.browsers = 'Firefox'; // pass a string (by mistake)
+console.log(products.browsers); // ['Firefox'] <- no problem, the value is an array
+
+products.latestBrowser = 'Chrome';
+console.log(products.browsers); // ['Firefox', 'Chrome']
+console.log(products.latestBrowser); // 'Chrome'
