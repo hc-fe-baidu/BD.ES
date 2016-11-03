@@ -1,6 +1,7 @@
 /**
  * promise: [https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise]
  * 所谓Promise，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。
+ * promise 提供统一的 api 以便各种异步操作都可以用同样的方法进行处理.
  *
  * new Promise(executor);
  * new Promise(function(resolve, reject) { ... });
@@ -18,7 +19,22 @@
  *  rejected: 失败的操作.
  * pending 状态的 promise 对象既可转换为带着一个成功值的 fulfilled 状态，也可变为带着一个失败信息的 rejected 状态。当状态发生转换时,promise.then / catch
  * 绑定的方法（函数句柄）就会被调用。(当绑定方法时，如果 promise对象已经处于 fulfilled 或 rejected 状态，那么相应的方法将会被立刻调用，
- * 所以在异步操作的完成情况和它的绑定方法之间不存在竞争条件。)
+ * 所以在异步操作的完成情况和它的绑定方法之间不存在竞争条件。) promise 状态的特点如下:
+ *  1. promise 中文为承诺,她的状态不受外界影响, 只有异步操作的结果可以决定当前是那种状态.以及转换.
+ *  2. promise 的状态变化不可逆, 变化方式只有从 pending 到 resolve 或者 reject 两种, 一般变化这个结果会保持,即便这个改变已经发生,
+ *      你继续给 promise 对象中添加回调函数,也会立即得到这个结果,[事件机制不同,如果错过监听再添加监听函数是没法得到上次的结果的.]
+ * promise 尽管提供了异步操作同步化的表达方式,但也存在一些问题
+ *  1. 一旦新建 promise 对象,提供的函数会立即执行,中途无法取消.
+ *  2. 如果不设置回调函数,promise 中抛出的错误无法反映到外部.
+ *  3. 阶段无法确定,如果某个 promise 还没有 resolve 或者 reject 时,你没发获取他的具体执行阶段, 没法知道他是刚执行还是快执行结束.
+ *  4. 不善于处理不短重复发生的事件, 可选去 stream 模式替代
+ *
+ * Promise.prototype.then(resolveion, rejection): 一般来讲不要这么做. 显示的 catch 更好一些
+ *   then接受两个参数: resolve 回调和 reject 回调.then 不会主动返回当前的 promise 作为链式调用的起点.你要链式 then 则需要主动返回 then
+ * Promise.prototype.catch(rejection):
+ *   cathc 接受一个 reject 回调, 实际上这个 catch 是 then(null, rejection) 的另一种表达方式.
+ *   能捕获 promise 的 reject, then 的回调中发生错误也能捕获.
+ *   在一个链式的then.catch 中 cathc 不能捕获自身及其后的链式 then 中发生的错我.只能前向捕获
  *
  * 因为Promise.prototype.then 和 Promise.prototype.catch方法返回 promises对象, 所以它们可以被链式调用—— 一种被称为 composition 的操作。
  *  [参考: https://mdn.mozillademos.org/files/8633/promises.png]
@@ -58,6 +74,7 @@ var promiseCount = 0;
     }).catch((reason) => {
         // Log the rejection reason
         console.log('Handle rejected promise (' + reason + ') here.');
+
     });
 
     console.log('beforeend', thisPromiseCount + ') 建立了Promise(同步代码结束)');
